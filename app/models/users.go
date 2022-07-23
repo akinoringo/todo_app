@@ -35,3 +35,35 @@ func (u *User) CreateUser() (err error) {
 	}
 	return err
 }
+
+func GetUser(id int) (user User, err error) {
+	user = User{}
+	cmd := `select id, uuid, name, email, password, created_at from users where id = ?`
+	err = Db.QueryRow(cmd, id).Scan(
+		&user.ID,
+		&user.UUID,
+		&user.Name,
+		&user.Email,
+		&user.Password,
+		&user.CreatedAt,
+	)
+	return user, err
+}
+
+func (u *User) UpdateUser() (err error) {
+	cmd := `update users set name = ?, email = ? where id = ?`
+	_, err = Db.Exec(cmd, u.Name, u.Email, u.ID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return err
+}
+
+func (u *User) DeleteUser() (err error) {
+	cmd := `delete from users where id = ?`
+	_, err = Db.Exec(cmd, u.ID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return err
+}
