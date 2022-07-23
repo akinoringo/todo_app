@@ -20,5 +20,5 @@ func generateHTML(w http.ResponseWriter, data interface{}, filenames ...string) 
 
 func top(w http.ResponseWriter, r *http.Request) {
 	// layoutも再度読み込ませないといけないっぽい
-	generateHTML(w, "Hello", "layout", "top")
+	generateHTML(w, "Hello", "layout", "public_navbar", "top")
 }
