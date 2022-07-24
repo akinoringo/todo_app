@@ -19,6 +19,21 @@ func generateHTML(w http.ResponseWriter, data interface{}, filenames ...string) 
 }
 
 func top(w http.ResponseWriter, r *http.Request) {
-	// layoutも再度読み込ませないといけないっぽい
-	generateHTML(w, "Hello", "layout", "public_navbar", "top")
+	_, err := Session(w, r)
+	// ログインしていない場合のみtopにアクセス
+	if err != nil {
+		// layoutも再度読み込ませないといけないっぽい
+		generateHTML(w, "Hello", "layout", "public_navbar", "top")
+	} else {
+		http.Redirect(w, r, "/todos", 302)
+	}
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	_, err := Session(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/", 302)
+	} else {
+		generateHTML(w, nil, "layout", "private_navbar", "index")
+	}
 }
