@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 )
 
@@ -30,10 +31,16 @@ func top(w http.ResponseWriter, r *http.Request) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	_, err := Session(w, r)
+	session, err := Session(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/", 302)
 	} else {
-		generateHTML(w, nil, "layout", "private_navbar", "index")
+		user, err := session.GetUserBySession()
+		if err != nil {
+			log.Println(err)
+		}
+		todos, _ := user.GetTodosByUser()
+		user.Todos = todos
+		generateHTML(w, user, "layout", "private_navbar", "index")
 	}
 }
